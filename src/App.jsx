@@ -1,71 +1,96 @@
+import { useRef, useState } from 'react'
+import Hero from './components/Hero'
+import ExpressForm from './components/ExpressForm'
+import StandardForm from './components/StandardForm'
+import SuccessToast from './components/SuccessToast'
+
 function App() {
+  const formRef = useRef(null)
+  const [toast, setToast] = useState(false)
+
+  const handleSuccess = () => {
+    setToast(true)
+    setTimeout(() => setToast(false), 4000)
+  }
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-
-      <div className="relative min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full">
-          {/* Header with Flames icon */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center mb-6">
-              <img
-                src="/flame-icon.svg"
-                alt="Flames"
-                className="w-24 h-24 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
-              />
-            </div>
-
-            <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-              Flames Blue
-            </h1>
-
-            <p className="text-xl text-blue-200 mb-6">
-              Build applications through conversation
-            </p>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 shadow-xl mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                1
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Describe your idea</h3>
-                <p className="text-blue-200/80 text-sm">Use the chat panel on the left to tell the AI what you want to build</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Watch it build</h3>
-                <p className="text-blue-200/80 text-sm">Your app will appear in this preview as the AI generates the code</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Refine and iterate</h3>
-                <p className="text-blue-200/80 text-sm">Continue the conversation to add features and make changes</p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-rose-50">
+      <header className="sticky top-0 z-10 backdrop-blur bg-white/60 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-rose-500" />
+            <div>
+              <p className="font-bold text-slate-900 leading-none">Zahnarztpraxis</p>
+              <p className="text-sm text-slate-500 leading-none">Karriere</p>
             </div>
           </div>
+          <nav className="hidden md:flex gap-6 text-slate-600">
+            <a href="#vorteile" className="hover:text-slate-900">Vorteile</a>
+            <a href="#bewerben" className="hover:text-slate-900">Bewerben</a>
+            <a href="#kontakt" className="hover:text-slate-900">Kontakt</a>
+          </nav>
+        </div>
+      </header>
 
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-blue-300/60">
-              No coding required • Just describe what you want
-            </p>
+      <Hero onStartExpress={scrollToForm} onScrollToForm={scrollToForm} />
+
+      <section id="vorteile" className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold text-slate-900">Warum wir?</h2>
+        <div className="mt-6 grid md:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'Wertschätzung & Teamgeist',
+              text: 'Ein herzliches, hilfsbereites Team mit flachen Hierarchien.'
+            },
+            {
+              title: 'Moderne Praxis',
+              text: 'Digitale Prozesse, hochwertige Materialien und aktuelle Technik.'
+            },
+            {
+              title: 'Entwicklung',
+              text: 'Fortbildungen, klare Einarbeitung und individuelle Förderung.'
+            }
+          ].map((f, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-slate-100 p-6 shadow">
+              <h3 className="font-semibold text-slate-900">{f.title}</h3>
+              <p className="text-slate-600 mt-2">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="bewerben" ref={formRef} className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Jetzt bewerben</h2>
+        <div className="grid lg:grid-cols-2 gap-8">
+          <ExpressForm onSuccess={handleSuccess} />
+          <StandardForm onSuccess={handleSuccess} />
+        </div>
+        <p className="text-sm text-slate-500 mt-4">Wir behandeln deine Daten vertraulich und melden uns schnellstmöglich.</p>
+      </section>
+
+      <footer id="kontakt" className="bg-white border-t border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-6 text-slate-600">
+          <div>
+            <p className="font-semibold text-slate-900">Zahnarztpraxis</p>
+            <p>Beispielstraße 1, 12345 Musterstadt</p>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-900">Kontakt</p>
+            <p>Telefon: 01234 567890</p>
+            <p>E-Mail: karriere@praxis.de</p>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-900">Hinweis</p>
+            <p>Wir freuen uns über Bewerbungen jeglichen Hintergrunds. Du bist willkommen!</p>
           </div>
         </div>
-      </div>
+      </footer>
+
+      <SuccessToast visible={toast} onClose={() => setToast(false)} />
     </div>
   )
 }
